@@ -7,7 +7,7 @@ import datetime
 
 lector = SimpleMFRC522()
 
-
+SALON = "G12"
 
 
 def conectar_bd():
@@ -29,7 +29,7 @@ def registrar_acceso():
     time_range = datetime.timedelta(minutes=20)
 
     if tipo_usuario == "P":
-        if horario and now - time_range <= horario <= now + time_range:
+        if horario and now - time_range <= horario <= now + time_range and salon == SALON:
             cursor = conexion.cursor()
             query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s)"
             valores = (identificador,)
