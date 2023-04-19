@@ -39,6 +39,8 @@ def registrar_acceso():
             print("Se registro el acceso de: ",identificador)
         elif not horario:
             print("El usuario no tiene horario asignado.")
+        elif salon != SALON:
+            print("El salon al que intenta ingresar no es el correcto.")
         else:
             print("No se registrara el acceso ya que lo intenta realizar fuera del horario valido.")
     else:
