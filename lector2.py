@@ -28,20 +28,21 @@ def registrar_acceso():
     # Definir el rango de tiempo permitido como 20 minutos antes o después de la fecha y hora actual
     time_range = datetime.timedelta(minutes=20)
 
-    if tipo_usuario == "P" and now - time_range <= horario <= now + time_range :
-        cursor=conexion.cursor()
-        query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s)"
-        valores = (identificador,)
-        cursor.execute(query,valores)
-        conexion.commit()
-        cursor.close()
-        print("Se registro el acceso de: ",identificador,)
-    else:
-        if tipo_usuario != "P":
-            print("No se puede agregar un acceso para un usuario que no es profesor.")
+    if tipo_usuario == "P":
+        if horario and now - time_range <= horario <= now + time_range:
+            cursor = conexion.cursor()
+            query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s)"
+            valores = (identificador,)
+            cursor.execute(query,valores)
+            conexion.commit()
+            cursor.close()
+            print("Se registro el acceso de: ",identificador)
+        elif not horario:
+            print("El usuario no tiene horario asignado.")
         else:
             print("No se registrara el acceso ya que lo intenta realizar fuera del horario valido.")
-
+    else:
+        print("No se puede agregar un acceso para un usuario que no es profesor.")
 
 try: 
     conexion = conectar_bd()
