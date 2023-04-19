@@ -85,7 +85,7 @@ try:
                 
 
             except Exception as e:
-                print("Error", f"No se pudo ejecutar el query: {e}")
+                print("Error", f"No se pudo ejecutar el query: {e} ya el usuario no esta registrado en el sistema.")
             
             conexion.commit()
             cursor.close()
