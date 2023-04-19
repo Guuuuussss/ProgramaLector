@@ -35,6 +35,7 @@ def registrar_acceso():
         cursor.execute(query,valores)
         conexion.commit()
         cursor.close()
+        print("Se registro el acceso de: ",identificador,)
     else:
         if tipo_usuario != "P":
             print("No se puede agregar un acceso para un usuario que no es profesor.")
@@ -80,7 +81,7 @@ try:
 
                 registrar_acceso()
                 
-                print("Se registro el acceso de: ",identificador,)
+                
 
             except Exception as e:
                 print("Error", f"No se pudo ejecutar el query: {e}")
