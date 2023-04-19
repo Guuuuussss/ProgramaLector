@@ -28,7 +28,7 @@ def registrar_acceso():
     # Definir el rango de tiempo permitido como 20 minutos antes o después de la fecha y hora actual
     time_range = datetime.timedelta(minutes=20)
 
-    if tipo_usuario == "P" and now - time_range <= horario_format <= now + time_range :
+    if tipo_usuario == "P" and now - time_range <= horario <= now + time_range :
         cursor=conexion.cursor()
         query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s)"
         valores = (identificador,)
@@ -74,7 +74,7 @@ try:
                 # aquí puedes hacer lo que quieras con las variables obtenidas
 
                 # Supongamos que tienes una variable "fecha_hora" con un dato tipo DATETIME de MySQL
-                horario_format = datetime.datetime.strptime(horario, '%Y-%m-%d %H:%M:%S')
+                '''horario_format = datetime.datetime.strptime(horario, '%Y-%m-%d %H:%M:%S')'''
 
                
 
