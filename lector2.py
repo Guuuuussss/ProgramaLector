@@ -66,21 +66,41 @@ try:
             
             try:
                 cursor.execute(query, (identificador,))
-                resultado = cursor.fetchone()
-                identificador = resultado[0]
-                nombre = resultado[1]
-                apellido_p = resultado[2]
-                apellido_m = resultado[3]
-                matricula = resultado[4]
-                tipo_usuario = resultado[5]
-                contrasena = resultado[6]
-                id_horario = resultado[7]
-                nombre_materia = resultado[8]
-                salon = resultado[9]
-                clave_materia = resultado[10]
-                grupo = resultado[11]
-                horario = resultado[12]
-                id_profesor = resultado[13]
+                resultado = cursor.fetchall()
+
+                if len(resultado) > 0:
+                    primer_fila = resultado[0]
+
+                    identificador = primer_fila[0]
+                    nombre = primer_fila[1]
+                    apellido_p = primer_fila[2]
+                    apellido_m = primer_fila[3]
+                    matricula = primer_fila[4]
+                    tipo_usuario = primer_fila[5]
+                    contrasena = primer_fila[6]
+                    id_horario = primer_fila[7]
+                    nombre_materia = primer_fila[8]
+                    salon = primer_fila[9]
+                    clave_materia = primer_fila[10]
+                    grupo = primer_fila[11]
+                    horario = primer_fila[12]
+                    id_profesor = primer_fila[13]
+                else:
+                    primer_fila = resultado[0]
+                    identificador = primer_fila[0]
+                    nombre = primer_fila[1]
+                    apellido_p = primer_fila[2]
+                    apellido_m = primer_fila[3]
+                    matricula = primer_fila[4]
+                    tipo_usuario = primer_fila[5]
+                    contrasena = primer_fila[6]
+                    id_horario = primer_fila[7]
+                    nombre_materia = primer_fila[8]
+                    salon = primer_fila[9]
+                    clave_materia = primer_fila[10]
+                    grupo = primer_fila[11]
+                    horario = primer_fila[12]
+                    id_profesor = primer_fila[13]
                 # aquí puedes hacer lo que quieras con las variables obtenidas
 
                 registrar_acceso()
