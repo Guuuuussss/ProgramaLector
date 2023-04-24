@@ -66,7 +66,7 @@ try:
             
             try:
                 cursor.execute(query, (identificador,))
-                resultado = cursor.fetchone()
+                resultado = cursor.fetchall()
                 identificador = resultado[0]
                 nombre = resultado[1]
                 apellido_p = resultado[2]
