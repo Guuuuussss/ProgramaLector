@@ -61,32 +61,29 @@ try:
             registro = str(id)
             identificador = registro[1:13]
             cursor = conexion.cursor()
-            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s AND DATE(clases.horario) = CURDATE();"
+            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY clases.horario;"
 
             
             try:
-                if len(query) == 0:
-                    print("Usted no tiene horario o clases registradas.")
-                else:
-                    cursor.execute(query, (identificador,))
-                    resultado = cursor.fetchone()
-                    identificador = resultado[0]
-                    nombre = resultado[1]
-                    apellido_p = resultado[2]
-                    apellido_m = resultado[3]
-                    matricula = resultado[4]
-                    tipo_usuario = resultado[5]
-                    contrasena = resultado[6]
-                    id_horario = resultado[7]
-                    nombre_materia = resultado[8]
-                    salon = resultado[9]
-                    clave_materia = resultado[10]
-                    grupo = resultado[11]
-                    horario = resultado[12]
-                    id_profesor = resultado[13]
-                    # aquí puedes hacer lo que quieras con las variables obtenidas
+                cursor.execute(query, (identificador,))
+                resultado = cursor.fetchone()
+                identificador = resultado[0]
+                nombre = resultado[1]
+                apellido_p = resultado[2]
+                apellido_m = resultado[3]
+                matricula = resultado[4]
+                tipo_usuario = resultado[5]
+                contrasena = resultado[6]
+                id_horario = resultado[7]
+                nombre_materia = resultado[8]
+                salon = resultado[9]
+                clave_materia = resultado[10]
+                grupo = resultado[11]
+                horario = resultado[12]
+                id_profesor = resultado[13]
+                # aquí puedes hacer lo que quieras con las variables obtenidas
 
-                    registrar_acceso()
+                registrar_acceso()
 
             except Exception as e:
                 print("Error, el usuario no esta registrado en el sistema.")
