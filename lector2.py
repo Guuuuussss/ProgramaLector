@@ -61,7 +61,7 @@ try:
             registro = str(id)
             identificador = registro[1:13]
             cursor = conexion.cursor()
-            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s;"
+            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s AND DATE(clases.horario) = CURDATE();"
 
             if len(query) == 0:
                 print("Usted no tiene clases hoy.")
