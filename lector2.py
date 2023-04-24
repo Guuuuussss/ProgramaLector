@@ -12,52 +12,57 @@ SALON = "CPB07"
 
 def conectar_bd():
     # Conectar a la base de datos
-        conexion = mysql.connector.connect(
-            host='192.168.100.10',
-            user='remote',
-            password='Briza_3121',
-            database='proyecto_accesos'
-        )
-    
-        return conexion
+    conexion = mysql.connector.connect(
+        host='192.168.100.9',
+        user='remote',
+        password='Briza_3121',
+        database='proyecto_accesos'
+    )
+
+    return conexion
+
 
 def registrar_acceso():
     # Obtener la fecha y hora actual
     now = datetime.datetime.now()
 
     # Definir el rango de tiempo permitido como 20 minutos antes o después de la fecha y hora actual
-    time_range = datetime.timedelta(minutes=20)
+    time_range = datetime.timedelta(minutes=30)
 
     if tipo_usuario == "P":
         if horario and now - time_range <= horario <= now + time_range and salon == SALON:
             cursor = conexion.cursor()
             query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s)"
             valores = (identificador,)
-            cursor.execute(query,valores)
+            cursor.execute(query, valores)
             conexion.commit()
             cursor.close()
-            print("Se registro el acceso de: ",identificador)
+            print("Se registro el acceso de: ", identificador)
         elif not horario:
             print("El usuario no tiene horario asignado.")
         elif salon != SALON:
             print("El salon al que intenta ingresar no es el correcto.")
+        elif tipo_usuario == 'E':
+            print("Por el momento no podemos registrar el acceso de los estudiantes.")
         else:
-            print("No se registrara el acceso ya que lo intenta realizar fuera del horario valido.")
+            print(
+                "No se registrara el acceso ya que lo intenta realizar fuera del horario valido.")
     else:
         print("No se puede agregar un acceso para un usuario que no es profesor.")
 
-try: 
+
+try:
     conexion = conectar_bd()
 
     if conexion.is_connected():
         print("Conexion exitosa.")
         while True:
-            id=lector.read()
+            id = lector.read()
             registro = str(id)
             identificador = registro[1:13]
-            cursor=conexion.cursor()
+            cursor = conexion.cursor()
             query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s;"
-            
+
             try:
                 cursor.execute(query, (identificador,))
                 resultado = cursor.fetchone()
@@ -77,24 +82,15 @@ try:
                 id_profesor = resultado[13]
                 # aquí puedes hacer lo que quieras con las variables obtenidas
 
-                # Supongamos que tienes una variable "fecha_hora" con un dato tipo DATETIME de MySQL
-                '''horario_format = datetime.datetime.strptime(horario, '%Y-%m-%d %H:%M:%S')'''
-
-               
-
                 registrar_acceso()
-                
-                
 
             except Exception as e:
-                print("Error", f"No se pudo ejecutar el query: {e} ya que el usuario no esta registrado en el sistema.")
-            
+                print("Error, el usuario no esta registrado en el sistema.")
+
             conexion.commit()
             cursor.close()
-           
-            
 
-            
+
 except Error as ex:
     print("Error durante la conexion.", ex)
 finally:
@@ -102,8 +98,3 @@ finally:
         conexion.close()
         GPIO.cleanup()
         print("La conexion ha finalizado")
-
-
-
-
-
