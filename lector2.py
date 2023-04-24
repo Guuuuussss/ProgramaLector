@@ -63,32 +63,35 @@ try:
             cursor = conexion.cursor()
             query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s;"
 
-            try:
-                cursor.execute(query, (identificador,))
-                resultado = cursor.fetchone()
-                identificador = resultado[0]
-                nombre = resultado[1]
-                apellido_p = resultado[2]
-                apellido_m = resultado[3]
-                matricula = resultado[4]
-                tipo_usuario = resultado[5]
-                contrasena = resultado[6]
-                id_horario = resultado[7]
-                nombre_materia = resultado[8]
-                salon = resultado[9]
-                clave_materia = resultado[10]
-                grupo = resultado[11]
-                horario = resultado[12]
-                id_profesor = resultado[13]
-                # aquí puedes hacer lo que quieras con las variables obtenidas
+            if len(query) == 0:
+                print("Usted no tiene clases hoy.")
+            else:
+                try:
+                    cursor.execute(query, (identificador,))
+                    resultado = cursor.fetchone()
+                    identificador = resultado[0]
+                    nombre = resultado[1]
+                    apellido_p = resultado[2]
+                    apellido_m = resultado[3]
+                    matricula = resultado[4]
+                    tipo_usuario = resultado[5]
+                    contrasena = resultado[6]
+                    id_horario = resultado[7]
+                    nombre_materia = resultado[8]
+                    salon = resultado[9]
+                    clave_materia = resultado[10]
+                    grupo = resultado[11]
+                    horario = resultado[12]
+                    id_profesor = resultado[13]
+                    # aquí puedes hacer lo que quieras con las variables obtenidas
 
-                registrar_acceso()
+                    registrar_acceso()
 
-            except Exception as e:
-                print("Error, el usuario no esta registrado en el sistema.")
+                except Exception as e:
+                    print("Error, el usuario no esta registrado en el sistema.")
 
-            conexion.commit()
-            cursor.close()
+                conexion.commit()
+                cursor.close()
 
 
 except Error as ex:
