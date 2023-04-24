@@ -7,7 +7,7 @@ import datetime
 
 lector = SimpleMFRC522()
 
-SALON = "CPB07"
+SALON = "A-101"
 
 
 def conectar_bd():
