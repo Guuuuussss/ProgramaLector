@@ -38,7 +38,7 @@ def registrar_acceso():
             cursor.execute(query, valores)
             conexion.commit()
             cursor.close()
-            print("Se registro el acceso de: ", identificador)
+            print("Se abrira la puerta del salón, Se registro el acceso de: ", identificador)
         elif not horario:
             print("El usuario no tiene horario asignado.")
         elif salon != SALON:
