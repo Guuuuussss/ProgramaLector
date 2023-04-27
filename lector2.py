@@ -61,7 +61,7 @@ try:
             registro = str(id)
             identificador = registro[1:13]
             cursor = conexion.cursor()
-            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY clases.horario;"
+            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
 
             
             try:
