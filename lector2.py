@@ -4,10 +4,11 @@ import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import pyodbc
 import datetime
+import logging
 
 lector = SimpleMFRC522()
 
-SALON = "CPB07"
+SALON = "A-101"
 
 
 def conectar_bd():
@@ -32,12 +33,12 @@ def registrar_acceso():
     if tipo_usuario == "P":
         if horario and now - time_range <= horario <= now + time_range and salon == SALON:
             cursor = conexion.cursor()
-            query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s)"
+            query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s);"
             valores = (identificador,)
             cursor.execute(query, valores)
             conexion.commit()
             cursor.close()
-            print("Se registro el acceso de: ", identificador)
+            print("Se abrira la puerta del salón, Se registro el acceso de: ", identificador)
         elif not horario:
             print("El usuario no tiene horario asignado.")
         elif salon != SALON:
@@ -61,38 +62,63 @@ try:
             registro = str(id)
             identificador = registro[1:13]
             cursor = conexion.cursor()
-            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s;"
-
+            
+            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s AND clases.salon = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
+            
             try:
-                cursor.execute(query, (identificador,))
-                resultado = cursor.fetchone()
-                identificador = resultado[0]
-                nombre = resultado[1]
-                apellido_p = resultado[2]
-                apellido_m = resultado[3]
-                matricula = resultado[4]
-                tipo_usuario = resultado[5]
-                contrasena = resultado[6]
-                id_horario = resultado[7]
-                nombre_materia = resultado[8]
-                salon = resultado[9]
-                clave_materia = resultado[10]
-                grupo = resultado[11]
-                horario = resultado[12]
-                id_profesor = resultado[13]
+                
+                cursor.execute(query, (identificador,SALON,))
+                resultado = cursor.fetchall()
+
+                if len(resultado) > 0:
+                    primer_fila = resultado[0]
+
+                    identificador = primer_fila[0]
+                    nombre = primer_fila[1]
+                    apellido_p = primer_fila[2]
+                    apellido_m = primer_fila[3]
+                    matricula = primer_fila[4]
+                    tipo_usuario = primer_fila[5]
+                    contrasena = primer_fila[6]
+                    id_horario = primer_fila[7]
+                    nombre_materia = primer_fila[8]
+                    salon = primer_fila[9]
+                    clave_materia = primer_fila[10]
+                    grupo = primer_fila[11]
+                    horario = primer_fila[12]
+                    id_profesor = primer_fila[13]
+                else:
+                    primer_fila = resultado[0]
+                    identificador = primer_fila[0]
+                    nombre = primer_fila[1]
+                    apellido_p = primer_fila[2]
+                    apellido_m = primer_fila[3]
+                    matricula = primer_fila[4]
+                    tipo_usuario = primer_fila[5]
+                    contrasena = primer_fila[6]
+                    id_horario = primer_fila[7]
+                    nombre_materia = primer_fila[8]
+                    salon = primer_fila[9]
+                    clave_materia = primer_fila[10]
+                    grupo = primer_fila[11]
+                    horario = primer_fila[12]
+                    id_profesor = primer_fila[13]
+                
+                
                 # aquí puedes hacer lo que quieras con las variables obtenidas
 
                 registrar_acceso()
 
             except Exception as e:
-                print("Error, el usuario no esta registrado en el sistema.")
+                print("Error, el usuario no esta registrado en el sistema o esta intentando ingresar en el salón incorrecto.")
 
             conexion.commit()
             cursor.close()
 
 
 except Error as ex:
-    print("Error durante la conexion.", ex)
+    logger = logging.getLogger(__name__)
+    logger.error("Error durante la conexion.", exc_info=True)
 finally:
     if conexion.is_connected():
         conexion.close()
