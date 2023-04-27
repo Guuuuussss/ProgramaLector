@@ -63,11 +63,11 @@ try:
             identificador = registro[1:13]
             cursor = conexion.cursor()
             
-            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
+            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s AND clases.salon = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
             
             try:
                 
-                cursor.execute(query, (identificador,))
+                cursor.execute(query, (identificador,SALON,))
                 resultado = cursor.fetchall()
 
                 if len(resultado) > 0:
@@ -103,12 +103,14 @@ try:
                     grupo = primer_fila[11]
                     horario = primer_fila[12]
                     id_profesor = primer_fila[13]
+                
+                
                 # aquí puedes hacer lo que quieras con las variables obtenidas
 
                 registrar_acceso()
 
             except Exception as e:
-                print("Error, el usuario no esta registrado en el sistema.")
+                print("Error, el usuario no esta registrado en el sistema o esta intentando ingresar en el salón incorrecto.")
 
             conexion.commit()
             cursor.close()
