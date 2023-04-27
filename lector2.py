@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import pyodbc
 import datetime
+import logging
 
 lector = SimpleMFRC522()
 
@@ -61,12 +62,13 @@ try:
             registro = str(id)
             identificador = registro[1:13]
             cursor = conexion.cursor()
-            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
+            
 
             
             try:
-                cursor.execute(query, (identificador,))
-                resultado = cursor.fetchall()
+                query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
+                params = (identificador,)
+                cursor.execute(query, params)
 
                 if len(resultado) > 0:
                     primer_fila = resultado[0]
@@ -113,7 +115,8 @@ try:
 
 
 except Error as ex:
-    print("Error durante la conexion.", ex)
+    logger = logging.getLogger(__name__)
+    logger.error("Error durante la conexion.", exc_info=True)
 finally:
     if conexion.is_connected():
         conexion.close()
