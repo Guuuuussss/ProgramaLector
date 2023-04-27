@@ -33,7 +33,7 @@ def registrar_acceso():
     if tipo_usuario == "P":
         if horario and now - time_range <= horario <= now + time_range and salon == SALON:
             cursor = conexion.cursor()
-            query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s)"
+            query = "INSERT INTO proyecto_accesos.accesos (fecha_acceso, identificador) VALUES (CURRENT_TIMESTAMP(), %s);"
             valores = (identificador,)
             cursor.execute(query, valores)
             conexion.commit()
@@ -63,12 +63,12 @@ try:
             identificador = registro[1:13]
             cursor = conexion.cursor()
             
-
+            query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
             
             try:
-                query = "SELECT * FROM proyecto_accesos.usuarios LEFT JOIN clases ON usuarios.identificador = clases.id_profesor WHERE usuarios.identificador = %s ORDER BY ABS(TIMESTAMPDIFF(SECOND, NOW(), clases.horario));"
-                params = (identificador,)
-                cursor.execute(query, params)
+                
+                cursor.execute(query, (identificador,))
+                resultado = cursor.fetchall()
 
                 if len(resultado) > 0:
                     primer_fila = resultado[0]
