@@ -1,5 +1,16 @@
 #Autor: Gustavo Antonio Luna Maya
 #Librerias necesarias para el funcionamiento del programa. 
+'''
+Este es un programa de Python que utiliza una Raspberry Pi para leer identificadores de credenciales RFID y verificar si el usuario tiene permiso para acceder a un salón específico. Aquí está una descripción general de lo que está sucediendo en el programa:
+
+Primero, se importan las bibliotecas necesarias para el programa, incluyendo el conector de MySQL para Python, el módulo de lectura del lector RFID y el módulo de registro de eventos. Luego, se inicializa el lector RFID y se asigna un salón específico al módulo Raspberry.
+
+La función conectar_bd() se utiliza para establecer una conexión a la base de datos MySQL. En el programa, se utiliza para conectarse a la base de datos que contiene la información del usuario y los horarios de clase.
+
+La función registrar_acceso() se utiliza para registrar un acceso exitoso a la base de datos y abrir la puerta del salón correspondiente. Esta función verifica que el usuario tenga permiso para acceder al salón en el que se encuentra el lector RFID, y que esté dentro del horario permitido. Si se cumplen estas condiciones, se registra un acceso en la base de datos y se abre la puerta del salón.
+
+El programa comienza con la lectura del identificador de la credencial RFID. Luego, se ejecuta un query para obtener el horario del profesor en el salón correspondiente en el momento en que intenta ingresar. Si se encuentra un horario válido, se guarda la información del usuario y del horario en variables. Si el usuario es un profesor, se llama a la función registrar_acceso() para registrar el acceso y abrir la puerta del salón. Si no se encuentra un horario válido o el usuario no es un profesor, se imprime un mensaje de error.
+'''
 import mysql.connector
 from mysql.connector import Error
 import RPi.GPIO as GPIO
@@ -14,7 +25,6 @@ lector = SimpleMFRC522()
 #Se asigna un salón a un modulo Raspberry
 SALON = "A-101"
 
-
 #La función conectar_bd() se encarga de establecer una conexión a una base de datos utilizando el módulo mysql.connector de Python.
 def conectar_bd():
     # Conectar a la base de datos
@@ -26,7 +36,6 @@ def conectar_bd():
     )
 
     return conexion
-
 
 #La función registrar_acceso valida la fecha actual y si se cumplen las condiciones relaliza el query para registrar el acceso del profesor y abre la puerta del salón.
 def registrar_acceso():
