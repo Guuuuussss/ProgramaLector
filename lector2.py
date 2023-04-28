@@ -1,3 +1,5 @@
+#Autor: Gustavo Antonio Luna Maya
+#Librerias necesarias para el funcionamiento del programa. 
 import mysql.connector
 from mysql.connector import Error
 import RPi.GPIO as GPIO
@@ -6,11 +8,14 @@ import pyodbc
 import datetime
 import logging
 
+#Se inicializa el lector RFID
 lector = SimpleMFRC522()
 
+#Se asigna un salón a un modulo Raspberry
 SALON = "A-101"
 
 
+#La función conectar_bd() se encarga de establecer una conexión a una base de datos utilizando el módulo mysql.connector de Python.
 def conectar_bd():
     # Conectar a la base de datos
     conexion = mysql.connector.connect(
@@ -23,6 +28,7 @@ def conectar_bd():
     return conexion
 
 
+#La función registrar_acceso valida la fecha actual y si se cumplen las condiciones relaliza el query para registrar el acceso del profesor y abre la puerta del salón.
 def registrar_acceso():
     # Obtener la fecha y hora actual
     now = datetime.datetime.now()
@@ -52,6 +58,9 @@ def registrar_acceso():
         print("No se puede agregar un acceso para un usuario que no es profesor.")
 
 
+#Inicio del programa
+#Se lee el identificador de la credencial y se guarda en la variable identificador,
+#el query obtiene los horario del profesor que tienen en este salón y las ordena segun la fecha tomando como referencia la fecha actual.
 try:
     conexion = conectar_bd()
 
@@ -69,7 +78,7 @@ try:
                 
                 cursor.execute(query, (identificador,SALON,))
                 resultado = cursor.fetchall()
-
+                #Guardamos el primer resultado del query ya que es la clase o horario que tiene en este salón al momento de intentar el acceso.
                 if len(resultado) > 0:
                     primer_fila = resultado[0]
 
@@ -104,9 +113,8 @@ try:
                     horario = primer_fila[12]
                     id_profesor = primer_fila[13]
                 
-                
-                # aquí puedes hacer lo que quieras con las variables obtenidas
-
+                #Si el profesor esta dado de alta, por lo tanto el query trajo registros de la base de datos se manda llamar la función registrar_acceso. 
+                #Si el profesor no esta registrado o intenta acceder en un salón incorrecto se imprime un mensaje de error. 
                 registrar_acceso()
 
             except Exception as e:
@@ -115,7 +123,7 @@ try:
             conexion.commit()
             cursor.close()
 
-
+#Si no existe o se realiza la conexón con la base de datos, lanzamos el siguiente error. 
 except Error as ex:
     logger = logging.getLogger(__name__)
     logger.error("Error durante la conexion.", exc_info=True)
