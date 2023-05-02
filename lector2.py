@@ -16,7 +16,10 @@ from mysql.connector import Error
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 import datetime
+from gpiozero import AngularServo
+from time import sleep
 
+servo = AngularServo(18,min_pulse_width=0.0006,max_pulse_width=0.0023)
 
 #Se inicializa el lector RFID
 lector = SimpleMFRC522()
@@ -53,6 +56,10 @@ def registrar_acceso():
             conexion.commit()
             cursor.close()
             print("Se abrira la puerta del salón, Se registro el acceso de: ", identificador)
+            servo.angle= 0
+            sleep(2)
+            servo.angle= 90
+            sleep(2)
         elif not horario:
             print("El usuario no tiene horario asignado.")
         elif salon != SALON:
