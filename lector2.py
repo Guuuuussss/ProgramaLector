@@ -43,7 +43,7 @@ def conectar_bd():
 def registrar_acceso():
     # Obtener la fecha y hora actual
     now = datetime.datetime.now()
-
+    bandera = True
     # Definir el rango de tiempo permitido como 20 minutos antes o después de la fecha y hora actual
     time_range = datetime.timedelta(minutes=30)
 
@@ -56,10 +56,14 @@ def registrar_acceso():
             conexion.commit()
             cursor.close()
             print("Se abrira la puerta del salón, Se registro el acceso de: ", identificador)
-            servo.angle= 0
-            sleep(2)
-            servo.angle= 90
-            sleep(2)
+            
+            while(bandera):
+                servo.angle= 0
+                sleep(2)
+                servo.angle= 90
+                sleep(2)
+                bandera = False
+            
         elif not horario:
             print("El usuario no tiene horario asignado.")
         elif salon != SALON:
