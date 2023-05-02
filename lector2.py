@@ -134,7 +134,10 @@ try:
                 
                 #Si el profesor esta dado de alta, por lo tanto el query trajo registros de la base de datos se manda llamar la función registrar_acceso. 
                 #Si el profesor no esta registrado o intenta acceder en un salón incorrecto se imprime un mensaje de error. 
-                registrar_acceso()
+                
+                if len(resultado) == 0:
+
+                    registrar_acceso()
 
             except Exception as e:
                 print("Error, el usuario no esta registrado en el sistema o esta intentando ingresar en el salón incorrecto.")
