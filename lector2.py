@@ -15,9 +15,8 @@ import mysql.connector
 from mysql.connector import Error
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
-import pyodbc
 import datetime
-import logging
+
 
 #Se inicializa el lector RFID
 lector = SimpleMFRC522()
@@ -134,8 +133,7 @@ try:
 
 #Si no existe o se realiza la conexón con la base de datos, lanzamos el siguiente error. 
 except Error as ex:
-    logger = logging.getLogger(__name__)
-    logger.error("Error durante la conexion.", exc_info=True)
+    print("Error durante la conexón.")
 finally:
     if conexion.is_connected():
         conexion.close()
